@@ -15,20 +15,20 @@ button{font:inherit;cursor:pointer;border:0}
 .screen{display:none;position:relative;z-index:1;min-height:100svh;padding:28px 18px 38px;align-items:center;justify-content:center;text-align:center}
 .screen.active{display:flex;animation:appear .55s ease both}
 @keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.panel{width:min(100%,510px);padding:30px 22px;border:1px solid #fff9;border-radius:28px;background:#fff9;box-shadow:0 18px 55px #b94c7930;backdrop-filter:blur(8px)}
+.panel{position:relative;width:min(100%,510px);padding:30px 22px;border:1px solid #fff9;border-radius:28px;background:#fff9;box-shadow:0 18px 55px #b94c7930;backdrop-filter:blur(8px);overflow:hidden}
 h1,h2{font-family:'Playfair Display',serif;margin:8px 0 14px}
 h1{font-size:clamp(2.2rem,9vw,3.7rem);line-height:1.05}
 h2{font-size:clamp(1.8rem,7vw,2.5rem)}
 .script{font-family:'Dancing Script',cursive}
 .sub{line-height:1.7;color:#a44b70}
 .heart{font-size:3.2rem;filter:drop-shadow(0 5px 7px #e75c9633)}
-.btn{display:inline-block;margin:12px 5px 0;padding:13px 24px;border-radius:999px;color:white;background:linear-gradient(100deg,#ff5b9b,#e8327c);box-shadow:0 8px 18px #e8327c40;font-weight:700;transition:.2s}
+.btn{display:inline-block;margin:12px 5px 0;padding:13px 24px;border-radius:999px;color:white;background:linear-gradient(100deg,#ff5b9b,#e8327c);box-shadow:0 8px 18px #e8327c40;font-weight:700;transition:.2s;position:relative;z-index:2}
 .btn:active{transform:scale(.96)}
 .btn.secondary{background:#fff;color:#d83c7c;border:1px solid #ffc0d8;box-shadow:none}
 input{width:min(100%,245px);padding:15px;border:2px solid #ffc0d8;border-radius:14px;text-align:center;font-size:1.3rem;letter-spacing:.5em;color:#b72c68;background:#fff;outline:none}
 .error{min-height:24px;color:#c3245f;font-size:.9rem}
 .tiny{font-size:.8rem;color:#b36a88}
-.back{position:absolute;top:18px;left:18px;border-radius:30px;background:#fff9;color:#b63b70;padding:9px 14px}
+.back{position:absolute;top:18px;left:18px;border-radius:30px;background:#fff9;color:#b63b70;padding:9px 14px;z-index:3}
 .progress{font-size:.8rem;letter-spacing:.12em;color:#b96a8b}
 .balloons{display:flex;justify-content:center;gap:13px;flex-wrap:wrap;margin:30px 0}
 .balloon{width:65px;height:82px;border-radius:50% 50% 45% 45%;position:relative;box-shadow:inset -8px -8px 12px #0001, inset 8px 5px 10px #fff7;animation:float 2.4s ease-in-out infinite;transition:.25s}
@@ -37,13 +37,16 @@ input{width:min(100%,245px);padding:15px;border:2px solid #ffc0d8;border-radius:
 .balloon:nth-child(1){background:#ff82b3;color:#ff82b3}.balloon:nth-child(2){background:#b9a4ff;color:#b9a4ff;animation-delay:.3s}.balloon:nth-child(3){background:#8cddc9;color:#8cddc9;animation-delay:.6s}.balloon:nth-child(4){background:#ffc56d;color:#ffc56d;animation-delay:.9s}
 .balloon.popped{transform:scale(0) rotate(25deg);opacity:0;pointer-events:none}
 .balloon-message{min-height:54px;margin:10px auto 0;padding:12px 14px;max-width:390px;border-radius:16px;background:#fff9;border:1px solid #ffd0e1;color:#b13d70;font-family:'Playfair Display',serif;font-size:1.05rem;line-height:1.5;animation:appear .35s ease}
-.letter{position:relative;overflow:hidden}
-.letter-photo{position:absolute;width:105px;height:125px;object-fit:cover;padding:6px 6px 19px;background:#fff;box-shadow:0 5px 15px #76334a35;opacity:.30;z-index:0;pointer-events:none}
-.letter-photo.p1{top:8px;left:7px;transform:rotate(-13deg)}
-.letter-photo.p2{top:5px;right:7px;transform:rotate(11deg)}
-.letter-photo.p3{bottom:7px;left:13px;transform:rotate(9deg)}
-.letter-photo.p4{bottom:5px;right:9px;transform:rotate(-10deg)}
-.letter-words{position:relative;z-index:1;padding:10px 8px;background:rgba(255,250,245,.76);border-radius:6px}
+
+/* Background photos behind the letter box */
+.bg-photos{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.letter-photo{position:absolute;width:45%;height:40%;object-fit:cover;padding:8px 8px 24px;background:#fff;box-shadow:0 8px 20px #76334a35;opacity:.65;transition:transform .3s ease}
+.letter-photo.p1{top:-10px;left:-10px;transform:rotate(-12deg)}
+.letter-photo.p2{top:-10px;right:-10px;transform:rotate(10deg)}
+.letter-photo.p3{bottom:-10px;left:-10px;transform:rotate(8deg)}
+.letter-photo.p4{bottom:-10px;right:-10px;transform:rotate(-9deg)}
+
+.letter-words{position:relative;z-index:1}
 @keyframes float{50%{translate:0 -10px}}
 .candle{font-size:5rem;display:block;margin:12px}
 .flame{display:inline-block;animation:flicker .7s infinite alternate}
@@ -51,10 +54,15 @@ input{width:min(100%,245px);padding:15px;border:2px solid #ffc0d8;border-radius:
 .bouquet{font-size:6rem;line-height:1.2;margin:12px}
 .tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px auto}
 .tag{background:#fff9;padding:9px 13px;border-radius:20px;font-size:.9rem}
-.envelope{font-size:6rem;cursor:pointer;display:inline-block;filter:drop-shadow(0 8px 10px #d94b8240);transition:.2s}
+.envelope{font-size:6rem;cursor:pointer;display:inline-block;filter:drop-shadow(0 8px 10px #d94b8240);transition:.2s;position:relative;z-index:2}
 .envelope:active{transform:scale(.94)}
-.letter{display:none;text-align:left;margin:16px auto 0;padding:25px 22px;max-width:440px;min-height:260px;background:#fffaf5;border:1px solid #f3c8d3;border-radius:8px;box-shadow:0 12px 25px #8f345020;line-height:1.85;white-space:pre-wrap;font-family:'Playfair Display',serif;color:#75405a}
+
+/* Scrollable letter box */
+.letter{display:none;text-align:left;margin:16px auto 0;padding:25px 22px;max-width:440px;height:320px;overflow-y:auto;background:rgba(255, 250, 245, 0.92);border:1px solid #f3c8d3;border-radius:12px;box-shadow:0 12px 25px #8f345020;line-height:1.85;white-space:pre-wrap;font-family:'Playfair Display',serif;color:#75405a;position:relative;z-index:2;backdrop-filter:blur(4px)}
+.letter::-webkit-scrollbar{width:6px}
+.letter::-webkit-scrollbar-thumb{background:#ffb0cc;border-radius:10px}
 .letter.open{display:block;animation:appear .5s ease}
+
 .gift{font-size:5rem;cursor:pointer;display:inline-block;animation:float 2s infinite}
 .photo{width:min(100%,280px);max-height:280px;object-fit:contain;border-radius:18px;margin:12px auto;display:block}
 .music{position:fixed;z-index:5;right:14px;top:14px;background:#fff9;border:1px solid #fff;padding:9px 12px;border-radius:30px;color:#b63b70;font-size:.85rem}
@@ -91,7 +99,6 @@ footer{margin-top:18px;font-size:.75rem;color:#b96a8b}
   <p class="progress">A DAY AS SPECIAL AS YOU</p>
   <h1 class="script">Happy Birthday,<br>my love!</h1>
   <p class="sub">Today is all about celebrating you — your smile, your heart, and every little thing that makes you you.</p>
-  <!-- Optional image/GIF: add gif1.gif to the same folder as this file -->
   <img class="photo" src="gif1.gif" alt="A birthday surprise" onerror="this.style.display='none'">
   <button class="btn" onclick="show('balloons')">Let's begin ♡</button>
  </div>
@@ -135,7 +142,6 @@ footer{margin-top:18px;font-size:.75rem;color:#b96a8b}
   <p class="progress">A BOUQUET FOR YOU</p>
   <h2 class="script">Your Rose Bouquet 🌹</h2>
   <div class="bouquet">💐</div>
-  <!-- Optional GIF: add gif2.gif to the same folder -->
   <img class="photo" src="gif2.gif" alt="Flowers for you" onerror="this.style.display='none'">
   <div class="tags"><span class="tag">You are my sunshine ☀️</span><span class="tag">Forever yours 💗</span><span class="tag">My favourite person</span></div>
   <p class="sub">If I could, I'd give you a flower for every reason I love you.</p>
@@ -145,35 +151,34 @@ footer{margin-top:18px;font-size:.75rem;color:#b96a8b}
 
 <!-- SCREEN 6: LETTER INTRO -->
 <section class="screen" id="letterIntro">
- <button class="back" onclick="show('bouquet')">← Back</button>
  <div class="panel">
-  <p class="progress">SOMETHING FROM MY HEART</p>
-  <h2 class="script">A Message From My Heart</h2>
-  <p class="sub">I wrote something just for you.<br>Tap the envelope to open it.</p>
-  <div class="envelope" onclick="openLetter()">💌</div>
-  <div class="letter" id="letter">
-   <!-- Add four photos named her1.jpg, her2.jpg, her3.jpg and her4.jpg beside index.html -->
+  <button class="back" onclick="show('bouquet')">← Back</button>
+  <p class="progress" style="position:relative;z-index:2">SOMETHING FROM MY HEART</p>
+  <h2 class="script" style="position:relative;z-index:2">A Message From My Heart</h2>
+  <p class="sub" style="position:relative;z-index:2">I wrote something just for you.<br>Tap the envelope to open it.</p>
+
+  <!-- Background Photos positioned behind letter & envelope -->
+  <div class="bg-photos">
    <img class="letter-photo p1" src="her1.jpg" alt="" onerror="this.style.display='none'">
    <img class="letter-photo p2" src="her2.jpg" alt="" onerror="this.style.display='none'">
    <img class="letter-photo p3" src="her3.jpg" alt="" onerror="this.style.display='none'">
    <img class="letter-photo p4" src="her4.jpg" alt="" onerror="this.style.display='none'">
+  </div>
+
+  <div class="envelope" onclick="openLetter()">💌</div>
+  
+  <div class="letter" id="letter">
    <div class="letter-words">Dear my love,
 
-   Happy Birthday to my favourite person. 💗
+Happy Birthday to my favourite person. 💗
 
-   <!-- EDIT YOUR LETTER: YOUR PERSONAL MESSAGE STARTS ON THE NEXT LINE. -->
-   Happy Birthday, Shuttuveyy ❤️🎂
+[Write your personal birthday message here. This text is editable.]
 
-Eda shuttuveyy, inn ninte birthday aanu, so first of all, happy birthday to you. ❤️ I hope ee year ninakku orupaad happiness konduvaratte, ninte ella wishes-um nadakkatte, and nee eppozhum happy aayirikkatte.
+I hope this year brings you endless reasons to smile. I love you, always. ❤️
 
-Enikk ninne ethra ishtamaanennu chilappol parayaan ariyilla, pakshe nee ente life-il orupaad special aanu. Ninnod samsaarikkunnathum, koode time spend cheyyunnathum okke enikk valare ishtamaanu. Nammal ingane thanne orupaad naal happy aayi irikkanam ennanu ente aagraham.
-
-Nammude koodeyulla moments iniyum orupaad undaavanam. Chilappol pinangum, vazhakkundaavum, pakshe athokke kazhinjum parasparam manassilaakki koode nilkkanam. Enikk ninte koode iniyum orupaad memories undaakkanam.
-
-Once again, happy birthday, shuttuveyy. ❤️ Nannayi enjoy cheyyanam, always happy aayirikkanam. Thank you for being a part of my life.
-
-I love you, shuttuveyy. ❤️</div>
+Forever yours.</div>
   </div>
+  
   <button class="btn" id="letterNext" style="display:none" onclick="show('gift')">One last thing…</button>
  </div>
 </section>
@@ -186,7 +191,6 @@ I love you, shuttuveyy. ❤️</div>
   <h2 class="script">Tap the gift!</h2>
   <div class="gift" onclick="revealGift()">🎁</div>
   <div id="giftReveal" style="display:none">
-   <!-- Optional GIF: add gif3.gif to the same folder -->
    <img class="photo" src="gif3.gif" alt="One last birthday surprise" onerror="this.style.display='none'">
    <h2 class="script">Lots of love for you ❤️</h2>
    <p class="sub">Once again, Happy Birthday, my love!<br>Thank you for being you. ♡</p>
@@ -196,7 +200,7 @@ I love you, shuttuveyy. ❤️</div>
 </section>
 
 <script>
-const PASSCODE = "3110"; // Change this only if you want a different passcode.
+const PASSCODE = "3110"; 
 let popped = 0;
 function show(id){
  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -241,7 +245,6 @@ function startMusicOnFirstTouch(){
  song.play().then(()=>document.getElementById('musicBtn').textContent='♫ Pause our song')
   .catch(()=>{musicStartedByFirstTouch=false;document.getElementById('musicBtn').textContent='♫ Tap to play';});
 }
-// Phones block autoplay until a user gesture; start on her first tap anywhere.
 document.addEventListener('pointerdown', e=>{
  if(e.target.closest('#musicBtn'))return;
  startMusicOnFirstTouch();
