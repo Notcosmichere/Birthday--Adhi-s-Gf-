@@ -15,7 +15,7 @@ button{font:inherit;cursor:pointer;border:0}
 .screen{display:none;position:relative;z-index:1;min-height:100svh;padding:28px 18px 38px;align-items:center;justify-content:center;text-align:center}
 .screen.active{display:flex;animation:appear .55s ease both}
 @keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.panel{position:relative;width:min(100%,510px);padding:30px 22px;border:1px solid #fff9;border-radius:28px;background:#fff9;box-shadow:0 18px 55px #b94c7930;backdrop-filter:blur(8px);overflow:hidden}
+.panel{position:relative;width:min(100%,510px);padding:30px 22px;border:1px solid #fff9;border-radius:28px;background:#fff9;box-shadow:0 18px 55px #b94c7930;backdrop-filter:blur(8px)}
 h1,h2{font-family:'Playfair Display',serif;margin:8px 0 14px}
 h1{font-size:clamp(2.2rem,9vw,3.7rem);line-height:1.05}
 h2{font-size:clamp(1.8rem,7vw,2.5rem)}
@@ -38,13 +38,14 @@ input{width:min(100%,245px);padding:15px;border:2px solid #ffc0d8;border-radius:
 .balloon.popped{transform:scale(0) rotate(25deg);opacity:0;pointer-events:none}
 .balloon-message{min-height:54px;margin:10px auto 0;padding:12px 14px;max-width:390px;border-radius:16px;background:#fff9;border:1px solid #ffd0e1;color:#b13d70;font-family:'Playfair Display',serif;font-size:1.05rem;line-height:1.5;animation:appear .35s ease}
 
-/* Background photos behind the letter box */
-.bg-photos{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.letter-photo{position:absolute;width:45%;height:40%;object-fit:cover;padding:8px 8px 24px;background:#fff;box-shadow:0 8px 20px #76334a35;opacity:.65;transition:transform .3s ease}
-.letter-photo.p1{top:-10px;left:-10px;transform:rotate(-12deg)}
-.letter-photo.p2{top:-10px;right:-10px;transform:rotate(10deg)}
-.letter-photo.p3{bottom:-10px;left:-10px;transform:rotate(8deg)}
-.letter-photo.p4{bottom:-10px;right:-10px;transform:rotate(-9deg)}
+/* Full-screen background corner photos for the letter screen */
+.corner-photos{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;display:none}
+.corner-photos.active{display:block}
+.letter-photo{position:absolute;width:28vw;max-width:180px;height:auto;object-fit:cover;padding:8px 8px 24px;background:#fff;box-shadow:0 10px 25px #76334a35;opacity:.75}
+.letter-photo.p1{top:20px;left:20px;transform:rotate(-10deg)}
+.letter-photo.p2{top:20px;right:20px;transform:rotate(12deg)}
+.letter-photo.p3{bottom:20px;left:20px;transform:rotate(8deg)}
+.letter-photo.p4{bottom:20px;right:20px;transform:rotate(-11deg)}
 
 .letter-words{position:relative;z-index:1}
 @keyframes float{50%{translate:0 -10px}}
@@ -57,8 +58,8 @@ input{width:min(100%,245px);padding:15px;border:2px solid #ffc0d8;border-radius:
 .envelope{font-size:6rem;cursor:pointer;display:inline-block;filter:drop-shadow(0 8px 10px #d94b8240);transition:.2s;position:relative;z-index:2}
 .envelope:active{transform:scale(.94)}
 
-/* Scrollable letter box */
-.letter{display:none;text-align:left;margin:16px auto 0;padding:25px 22px;max-width:440px;height:320px;overflow-y:auto;background:rgba(255, 250, 245, 0.92);border:1px solid #f3c8d3;border-radius:12px;box-shadow:0 12px 25px #8f345020;line-height:1.85;white-space:pre-wrap;font-family:'Playfair Display',serif;color:#75405a;position:relative;z-index:2;backdrop-filter:blur(4px)}
+/* Scrollable letter box in the center */
+.letter{display:none;text-align:left;margin:16px auto 0;padding:25px 22px;max-width:440px;height:300px;overflow-y:auto;background:rgba(255, 250, 245, 0.95);border:1px solid #f3c8d3;border-radius:12px;box-shadow:0 12px 25px #8f345020;line-height:1.85;white-space:pre-wrap;font-family:'Playfair Display',serif;color:#75405a;position:relative;z-index:2}
 .letter::-webkit-scrollbar{width:6px}
 .letter::-webkit-scrollbar-thumb{background:#ffb0cc;border-radius:10px}
 .letter.open{display:block;animation:appear .5s ease}
@@ -77,6 +78,14 @@ footer{margin-top:18px;font-size:.75rem;color:#b96a8b}
 <button class="music" id="musicBtn" onclick="toggleMusic()">♫ Play our song</button>
 <audio id="song" loop preload="none"><source src="song1.mp3" type="audio/mpeg"></audio>
 <div class="confetti" id="confetti"></div>
+
+<!-- Corner Background Photos for Letter Screen -->
+<div class="corner-photos" id="cornerPhotos">
+ <img class="letter-photo p1" src="her1.jpg" alt="" onerror="this.style.display='none'">
+ <img class="letter-photo p2" src="her2.jpg" alt="" onerror="this.style.display='none'">
+ <img class="letter-photo p3" src="her3.jpg" alt="" onerror="this.style.display='none'">
+ <img class="letter-photo p4" src="her4.jpg" alt="" onerror="this.style.display='none'">
+</div>
 
 <!-- SCREEN 1: PASSCODE -->
 <section class="screen active" id="lock">
@@ -151,20 +160,12 @@ footer{margin-top:18px;font-size:.75rem;color:#b96a8b}
 
 <!-- SCREEN 6: LETTER INTRO -->
 <section class="screen" id="letterIntro">
+ <button class="back" onclick="show('bouquet')">← Back</button>
  <div class="panel">
-  <button class="back" onclick="show('bouquet')">← Back</button>
-  <p class="progress" style="position:relative;z-index:2">SOMETHING FROM MY HEART</p>
-  <h2 class="script" style="position:relative;z-index:2">A Message From My Heart</h2>
-  <p class="sub" style="position:relative;z-index:2">I wrote something just for you.<br>Tap the envelope to open it.</p>
-
-  <!-- Background Photos positioned behind letter & envelope -->
-  <div class="bg-photos">
-   <img class="letter-photo p1" src="her1.jpg" alt="" onerror="this.style.display='none'">
-   <img class="letter-photo p2" src="her2.jpg" alt="" onerror="this.style.display='none'">
-   <img class="letter-photo p3" src="her3.jpg" alt="" onerror="this.style.display='none'">
-   <img class="letter-photo p4" src="her4.jpg" alt="" onerror="this.style.display='none'">
-  </div>
-
+  <p class="progress">SOMETHING FROM MY HEART</p>
+  <h2 class="script">A Message From My Heart</h2>
+  <p class="sub">I wrote something just for you.<br>Tap the envelope to open it.</p>
+  
   <div class="envelope" onclick="openLetter()">💌</div>
   
   <div class="letter" id="letter">
@@ -208,6 +209,15 @@ function show(id){
  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
  document.getElementById(id).classList.add('active');
  window.scrollTo({top:0,behavior:'smooth'});
+ 
+ // Toggle corner photos only on the letter intro screen
+ const cornerPhotos = document.getElementById('cornerPhotos');
+ if(id === 'letterIntro') {
+  cornerPhotos.classList.add('active');
+ } else {
+  cornerPhotos.classList.remove('active');
+ }
+
  if(id==='welcome') confetti();
 }
 function unlock(){
