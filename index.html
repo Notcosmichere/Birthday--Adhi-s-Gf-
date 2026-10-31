@@ -15,7 +15,7 @@ button{font:inherit;cursor:pointer;border:0}
 .screen{display:none;position:relative;z-index:1;min-height:100svh;padding:28px 18px 38px;align-items:center;justify-content:center;text-align:center}
 .screen.active{display:flex;animation:appear .55s ease both}
 @keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.panel{position:relative;width:min(100%,510px);padding:30px 22px;border:1px solid #fff9;border-radius:28px;background:#fff9;box-shadow:0 18px 55px #b94c7930;backdrop-filter:blur(8px)}
+.panel{position:relative;width:min(100%,510px);padding:30px 22px;border:1px solid #fff9;border-radius:28px;background:rgba(255, 255, 255, 0.7);box-shadow:0 18px 55px #b94c7930;backdrop-filter:blur(8px)}
 h1,h2{font-family:'Playfair Display',serif;margin:8px 0 14px}
 h1{font-size:clamp(2.2rem,9vw,3.7rem);line-height:1.05}
 h2{font-size:clamp(1.8rem,7vw,2.5rem)}
@@ -30,22 +30,43 @@ input{width:min(100%,245px);padding:15px;border:2px solid #ffc0d8;border-radius:
 .tiny{font-size:.8rem;color:#b36a88}
 .back{position:absolute;top:18px;left:18px;border-radius:30px;background:#fff9;color:#b63b70;padding:9px 14px;z-index:3}
 .progress{font-size:.8rem;letter-spacing:.12em;color:#b96a8b}
-.balloons{display:flex;justify-content:center;gap:13px;flex-wrap:wrap;margin:30px 0}
-.balloon{width:65px;height:82px;border-radius:50% 50% 45% 45%;position:relative;box-shadow:inset -8px -8px 12px #0001, inset 8px 5px 10px #fff7;animation:float 2.4s ease-in-out infinite;transition:.25s}
-.balloon:after{content:"";position:absolute;bottom:-8px;left:28px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid currentColor}
-.balloon:before{content:"";position:absolute;top:80px;left:32px;width:1px;height:50px;background:#b77b94}
-.balloon:nth-child(1){background:#ff82b3;color:#ff82b3}.balloon:nth-child(2){background:#b9a4ff;color:#b9a4ff;animation-delay:.3s}.balloon:nth-child(3){background:#8cddc9;color:#8cddc9;animation-delay:.6s}.balloon:nth-child(4){background:#ffc56d;color:#ffc56d;animation-delay:.9s}
+
+/* Balloon Game Grid Layout */
+.balloons-grid{display:grid;grid-template-columns:repeat(2, 1fr);gap:16px;margin:24px 0 16px;perspective:1000px}
+.balloon-card{position:relative;min-height:130px;display:flex;align-items:center;justify-content:center}
+
+.balloon{width:70px;height:88px;border-radius:50% 50% 45% 45%;position:relative;box-shadow:inset -8px -8px 12px #0001, inset 8px 5px 10px #fff7;animation:float 2.4s ease-in-out infinite;transition:transform .3s ease, opacity .3s ease;margin:0 auto}
+.balloon:after{content:"";position:absolute;bottom:-8px;left:30px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid currentColor}
+.balloon:before{content:"";position:absolute;top:86px;left:34px;width:1px;height:45px;background:#b77b94}
+.balloon-card:nth-child(1) .balloon{background:#ff82b3;color:#ff82b3}
+.balloon-card:nth-child(2) .balloon{background:#b9a4ff;color:#b9a4ff;animation-delay:.3s}
+.balloon-card:nth-child(3) .balloon{background:#8cddc9;color:#8cddc9;animation-delay:.6s}
+.balloon-card:nth-child(4) .balloon{background:#ffc56d;color:#ffc56d;animation-delay:.9s}
+
 .balloon.popped{transform:scale(0) rotate(25deg);opacity:0;pointer-events:none}
-.balloon-message{min-height:54px;margin:10px auto 0;padding:12px 14px;max-width:390px;border-radius:16px;background:#fff9;border:1px solid #ffd0e1;color:#b13d70;font-family:'Playfair Display',serif;font-size:1.05rem;line-height:1.5;animation:appear .35s ease}
+
+/* Pop Effect Animations */
+.pop-effect{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;z-index:4}
+.pop-ring{position:absolute;width:20px;height:20px;border-radius:50%;border:3px solid var(--pink);animation:popRing .45s ease-out forwards}
+.pop-heart{position:absolute;font-size:1.6rem;animation:popHeart .6s ease-out forwards}
+
+@keyframes popRing{0%{width:20px;height:20px;opacity:1}100%{width:110px;height:110px;opacity:0}}
+@keyframes popHeart{0%{transform:scale(0) translateY(0);opacity:1}60%{transform:scale(1.3) translateY(-15px)}100%{transform:scale(1) translateY(-30px);opacity:0}}
+
+/* In-place message inside balloon area */
+.card-message{display:none;position:absolute;inset:0;padding:12px;border-radius:18px;background:rgba(255,255,255,0.92);border:1px solid #ffd0e1;color:#b13d70;font-family:'Playfair Display',serif;font-size:0.92rem;line-height:1.45;align-items:center;justify-content:center;box-shadow:0 6px 18px #b94c7918;animation:popAppear .4s ease-out both}
+.card-message.show{display:flex}
+
+@keyframes popAppear{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
 
 /* Full-screen background corner photos for the letter screen */
 .corner-photos{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;display:none}
 .corner-photos.active{display:block}
-.letter-photo{position:absolute;width:28vw;max-width:180px;height:auto;object-fit:cover;padding:8px 8px 24px;background:#fff;box-shadow:0 10px 25px #76334a35;opacity:.75}
-.letter-photo.p1{top:20px;left:20px;transform:rotate(-10deg)}
-.letter-photo.p2{top:20px;right:20px;transform:rotate(12deg)}
-.letter-photo.p3{bottom:20px;left:20px;transform:rotate(8deg)}
-.letter-photo.p4{bottom:20px;right:20px;transform:rotate(-11deg)}
+.letter-photo{position:absolute;width:clamp(160px, 35vw, 240px);height:auto;object-fit:cover;padding:10px 10px 28px;background:#fff;box-shadow:0 12px 30px #76334a40;opacity:.85}
+.letter-photo.p1{top:-10px;left:-10px;transform:rotate(-12deg)}
+.letter-photo.p2{top:-10px;right:-10px;transform:rotate(12deg)}
+.letter-photo.p3{bottom:-10px;left:-10px;transform:rotate(8deg)}
+.letter-photo.p4{bottom:-10px;right:-10px;transform:rotate(-11deg)}
 
 .letter-words{position:relative;z-index:1}
 @keyframes float{50%{translate:0 -10px}}
@@ -59,7 +80,7 @@ input{width:min(100%,245px);padding:15px;border:2px solid #ffc0d8;border-radius:
 .envelope:active{transform:scale(.94)}
 
 /* Scrollable letter box in the center */
-.letter{display:none;text-align:left;margin:16px auto 0;padding:25px 22px;max-width:440px;height:300px;overflow-y:auto;background:rgba(255, 250, 245, 0.95);border:1px solid #f3c8d3;border-radius:12px;box-shadow:0 12px 25px #8f345020;line-height:1.85;white-space:pre-wrap;font-family:'Playfair Display',serif;color:#75405a;position:relative;z-index:2}
+.letter{display:none;text-align:left;margin:16px auto 0;padding:25px 22px;max-width:440px;height:300px;overflow-y:auto;background:rgba(255, 250, 245, 0.96);border:1px solid #f3c8d3;border-radius:12px;box-shadow:0 12px 25px #8f345020;line-height:1.85;white-space:pre-wrap;font-family:'Playfair Display',serif;color:#75405a;position:relative;z-index:2}
 .letter::-webkit-scrollbar{width:6px}
 .letter::-webkit-scrollbar-thumb{background:#ffb0cc;border-radius:10px}
 .letter.open{display:block;animation:appear .5s ease}
@@ -120,14 +141,31 @@ footer{margin-top:18px;font-size:.75rem;color:#b96a8b}
   <p class="progress">A LITTLE BIRTHDAY GAME</p>
   <h2>Pop all 4 balloons</h2>
   <p class="sub">Tap each balloon and make a wish come true ✨</p>
-  <div class="balloons">
-   <button class="balloon" aria-label="Pop balloon" onclick="pop(this)"></button>
-   <button class="balloon" aria-label="Pop balloon" onclick="pop(this)"></button>
-   <button class="balloon" aria-label="Pop balloon" onclick="pop(this)"></button>
-   <button class="balloon" aria-label="Pop balloon" onclick="pop(this)"></button>
+
+  <div class="balloons-grid">
+   <div class="balloon-card">
+    <button class="balloon" aria-label="Pop balloon" onclick="popBalloon(this, 0)"></button>
+    <div class="pop-effect"></div>
+    <div class="card-message">You are so loved — more than words could ever explain. 💗</div>
+   </div>
+   <div class="balloon-card">
+    <button class="balloon" aria-label="Pop balloon" onclick="popBalloon(this, 1)"></button>
+    <div class="pop-effect"></div>
+    <div class="card-message">I hope you never forget how special and wonderful you are. ✨</div>
+   </div>
+   <div class="balloon-card">
+    <button class="balloon" aria-label="Pop balloon" onclick="popBalloon(this, 2)"></button>
+    <div class="pop-effect"></div>
+    <div class="card-message">On hard days too, remember: you deserve all the happiness. 🌷</div>
+   </div>
+   <div class="balloon-card">
+    <button class="balloon" aria-label="Pop balloon" onclick="popBalloon(this, 3)"></button>
+    <div class="pop-effect"></div>
+    <div class="card-message">You make my world brighter just by being in it. ❤️</div>
+   </div>
   </div>
+
   <p class="sub" id="balloonCount">4 little wishes left</p>
-  <div class="balloon-message" id="balloonMessage" aria-live="polite">Pop a balloon to reveal a little reminder of how loved you are 💗</div>
   <button class="btn" id="balloonNext" style="display:none" onclick="show('candle')">Next surprise ♡</button>
  </div>
 </section>
@@ -169,17 +207,15 @@ footer{margin-top:18px;font-size:.75rem;color:#b96a8b}
   <div class="envelope" onclick="openLetter()">💌</div>
   
   <div class="letter" id="letter">
-   <div class="letter-words">Happy Birthday, Shuttuveyy ❤️🎂
+   <div class="letter-words">Dear my love,
 
-Eda shuttuveyy, inn ninte birthday aanu, so first of all, happy birthday to you. ❤️ I hope ee year ninakku orupaad happiness konduvaratte, ninte ella wishes-um nadakkatte, and nee eppozhum happy aayirikkatte.
+Happy Birthday to my favourite person. 💗
 
-Enikk ninne ethra ishtamaanennu chilappol parayaan ariyilla, pakshe nee ente life-il orupaad special aanu. Ninnod samsaarikkunnathum, koode time spend cheyyunnathum okke enikk valare ishtamaanu. Nammal ingane thanne orupaad naal happy aayi irikkanam ennanu ente aagraham.
+[Write your personal birthday message here. This text is editable.]
 
-Nammude koodeyulla moments iniyum orupaad undaavanam. Chilappol pinangum, vazhakkundaavum, pakshe athokke kazhinjum parasparam manassilaakki koode nilkkanam. Enikk ninte koode iniyum orupaad memories undaakkanam.
+I hope this year brings you endless reasons to smile. I love you, always. ❤️
 
-Once again, happy birthday, shuttuveyy. ❤️ Nannayi enjoy cheyyanam, always happy aayirikkanam. Thank you for being a part of my life.
-
-I love you, shuttuveyy. ❤️</div>
+Forever yours.</div>
   </div>
   
   <button class="btn" id="letterNext" style="display:none" onclick="show('gift')">One last thing…</button>
@@ -205,12 +241,12 @@ I love you, shuttuveyy. ❤️</div>
 <script>
 const PASSCODE = "3110"; 
 let popped = 0;
+
 function show(id){
  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
  document.getElementById(id).classList.add('active');
  window.scrollTo({top:0,behavior:'smooth'});
  
- // Toggle corner photos only on the letter intro screen
  const cornerPhotos = document.getElementById('cornerPhotos');
  if(id === 'letterIntro') {
   cornerPhotos.classList.add('active');
@@ -220,35 +256,48 @@ function show(id){
 
  if(id==='welcome') confetti();
 }
+
 function unlock(){
  const value=document.getElementById('passcode').value;
  if(value===PASSCODE){document.getElementById('error').textContent='';show('welcome');}
  else{document.getElementById('error').textContent='Not quite, try our special code again 💗';document.getElementById('passcode').value='';}
 }
 document.getElementById('passcode').addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
-const balloonMessages = [
- "You are so loved — more than words could ever explain. 💗",
- "I hope you never forget how special, beautiful and wonderful you are. ✨",
- "On hard days too, remember: you are never alone, and you deserve all the happiness. 🌷",
- "You make my world brighter just by being in it. Happy birthday, my love! ❤️"
-];
-function pop(el){
- if(el.classList.contains('popped'))return;
- el.classList.add('popped');
- document.getElementById('balloonMessage').textContent=balloonMessages[popped];
+
+function popBalloon(btn, idx){
+ if(btn.classList.contains('popped')) return;
+ 
+ btn.classList.add('popped');
+ const card = btn.closest('.balloon-card');
+ const effectContainer = card.querySelector('.pop-effect');
+ const msgBox = card.querySelector('.card-message');
+
+ // Create Pop Effect Elements
+ effectContainer.innerHTML = '<div class="pop-ring"></div><div class="pop-heart">💖</div>';
+ 
+ setTimeout(() => {
+  effectContainer.innerHTML = '';
+  msgBox.classList.add('show');
+ }, 250);
+
  popped++;
- const left=4-popped;
- document.getElementById('balloonCount').textContent=left?`${left} little ${left===1?'wish':'wishes'} left`:'All wishes sent! ✨';
- if(popped===4)document.getElementById('balloonNext').style.display='inline-block';
+ const left = 4 - popped;
+ document.getElementById('balloonCount').textContent = left ? `${left} little ${left===1?'wish':'wishes'} left` : 'All wishes sent! ✨';
+ if(popped === 4) {
+  document.getElementById('balloonNext').style.display = 'inline-block';
+ }
 }
+
 function openLetter(){
  document.getElementById('letter').classList.add('open');
  document.getElementById('letterNext').style.display='inline-block';
 }
+
 function revealGift(){
  document.getElementById('giftReveal').style.display='block';
  confetti();
 }
+
 const song=document.getElementById('song');
 let musicStartedByFirstTouch = false;
 function startMusicOnFirstTouch(){
